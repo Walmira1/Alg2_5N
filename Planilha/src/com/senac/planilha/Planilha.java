@@ -21,6 +21,7 @@ public class Planilha {
 		String nome;
 		String formula;
 		double result = 0;
+		boolean naoexiste = false; 
 		ListaEncadeada listacolunas = new ListaEncadeada();
 		ListadeCelulas lista = new ListadeCelulas();
 		Scanner sc1 = new Scanner(System.in);
@@ -30,49 +31,61 @@ public class Planilha {
 			Celula celula = new Celula();
 			System.out.println();
 			System.out.println("Digite a celula: ");
-		//	nome = new Scanner(System.in).next();
-			Scanner sa = new Scanner(System.in);
-			nome = sa.nextLine();
+		 	nome = new Scanner(System.in).next();
+			//Scanner sa = new Scanner(System.in);
+			//nome = sa.nextLine();
 			if (nome.equalsIgnoreCase("fim")) {
 				System.out.println("Fim do Programa");
 				break;
 			}
 			celula.setnome(nome);
-	        nome = verifyName(nome);
-			nome = nome.substring(0, 1);
-			
-			int i = Integer.parseInt(nome) - 1;
-					
+			nome = verifyName(nome);
+	        int i = Integer.parseInt(nome.substring(0, 1)) - 1;
 			nome = celula.getnome();
-			nome = nome.substring(1);
-			int z = Integer.parseInt(nome) - 1;
+			int z = Integer.parseInt(nome.substring(1)) -1 ;
 			lista = listacolunas.get(i); 
 			if (lista != null){
 			   formula = lista.get(z);
+			   if (formula == "  "){
+				   System.out.println("não encontrou formula");
+				    naoexiste = true;
 			   }
-			else
+			   }
+			else{
+				System.out.println("formula fora dos limites da planilha, vai terminar o programa");
 			   formula = "  "	;
-			celula.setformula(formula);
+			   naoexiste = true;
+			   break;
+			   
+			}
+			
+		    celula.setformula(formula);
 			System.out.println(celula.getnome() + " Formula = " + celula.getformula());
 			System.out.println("Insira a nova Formula: ");
 			Scanner sc = new Scanner(System.in);
 			
-				formula = sc.nextLine();
-				celula.setformula(formula);
-				lista.change(z, celula.getformula());
-	/*	  		lista.adicionaQualquerPosicao(0,celula.getformula());
-				if (formula.equalsIgnoreCase("fim")) {
-					System.out.println("Fim do Programa");
+			formula = sc.nextLine();
+			celula.setformula(formula);
+	//		System.out.println(naoexiste);
+			if (naoexiste == false)
+		     lista.change(z, celula.getformula());
+			else
+				System.out.println("adiciona formula"+ formula);
+				lista.add(formula);
+	//	  	lista.adicionaQualquerPosicao(0,celula.getformula());
+			if (formula.equalsIgnoreCase("fim")) {
+				System.out.println("Fim do Programa");
 					break;
 				
 				}
-				String postfix = AvaliadorExpressao
-						.convertInfixToPostfix(formula);
+				String postfix = AvaliadorExpressao.convertInfixToPostfix(formula);
+
 				result = AvaliadorExpressao.evaluateRPN(postfix);
+				writeScreem(listacolunas);
 				System.out.println(celula.getnome() + '\n');
-				System.out.println(celula.getnome() + ":" + result + '\n');
+				System.out.println(celula.getnome() + ": " + result + '\n');
 				
-	*/
+
 				
          
 			}
@@ -119,15 +132,14 @@ public class Planilha {
 			nome = nome.replaceFirst("g", "7");
 			nome = nome.replaceFirst("H", "8");
 			nome = nome.replaceFirst("h", "8");
-			System.out.println(nome);
+		//	System.out.println(nome);
 			return nome;
 
 	   }
 	   static void writeScreem(ListaEncadeada listaencadeada) throws InvalidOperator, InvalidToken{
-		   double result = 0;
+		  
 		   String [] letras = {"A", "B", "C", "D", "E", "F", "G"};
 		   String formula = " ";
-	//	   String nome = " ";
 		   int z = 0;
 		   ListadeCelulas listacelulas = new ListadeCelulas();
 		   for (int i = 0; i < listaencadeada.size(); i++){
@@ -138,33 +150,18 @@ public class Planilha {
 				    
 				    z = j + 1;
 				   System.out.print(letras[i] +""+z+":" + "  ");
-				//   nome = ""+j;
-				//   nome = letras[j].concat(nome);
-				   formula = listacelulas.get(j);
-				   
-				   
-				   result = resolveformula(formula);
-				   System.out.print(""+ result);
+				
+				   formula = listacelulas.get(j);				   
+		   
+		
+				   System.out.print(formula + " " );
 				   }
 		   }
+		   System.out.println();
 		
 	   }
-	   public static double resolveformula(String formula) throws InvalidOperator, InvalidToken{
-		   double result = 0;
-		   Celula celula = new Celula();
-		   celula.setformula(formula);
-		   if (formula.equalsIgnoreCase("fim")) {
-				System.out.println("Fim do Programa");
-		    			
-			}
-			String postfix = AvaliadorExpressao
-					.convertInfixToPostfix(formula);
-			result = AvaliadorExpressao.evaluateRPN(postfix);
-	//		System.out.println(celula.getnome() + '\n');
-	//		System.out.println(celula.getnome() + ":" + result + '\n');
-            return result;
+	   
 	       
-	   }     
 	
 	}
 	
